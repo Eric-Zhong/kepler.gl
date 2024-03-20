@@ -15,6 +15,8 @@ const webpack = require('webpack');
 const fs = require('fs');
 const KeplerPackage = require('../package');
 const {logStep, logError} = require('../scripts/log');
+
+// 从 root 定义的共享 webpack 配置获取配置数据
 const {
   WEBPACK_ENV_VARIABLES,
   ENV_VARIABLES_WITH_INSTRUCTIONS,
@@ -24,17 +26,23 @@ const {
 const LIB_DIR = resolve(__dirname, '..');
 const SRC_DIR = resolve(LIB_DIR, './src');
 
+logStep(`[webpack.config.local.js] SRC_DIR: ${SRC_DIR}`);
+
 // For deck.gl upgrade, load deck.gl from node_modules of the root directory
 const NODE_MODULES_DIR = resolve(__dirname, '../node_modules');
+logStep(`[webpack.config.local.js] NODE_MODULES_DIR: ${NODE_MODULES_DIR}`);
 
 // For debugging deck.gl, load deck.gl from external deck.gl directory
 const EXTERNAL_DECK_SRC = resolve(__dirname, '../../deck.gl');
+logStep(`[webpack.config.local.js] EXTERNAL_DECK_SRC: ${EXTERNAL_DECK_SRC}`);
 
 // For debugging loaders.gl, load loaders.gl from external loaders.gl directory
 const EXTERNAL_LOADERS_SRC = resolve(__dirname, '../../loaders.gl');
+logStep(`[webpack.config.local.js] EXTERNAL_LOADERS_SRC: ${EXTERNAL_LOADERS_SRC}`);
 
 // For debugging hubble.gl, load hubble.gl from external hubble.gl directory
 const EXTERNAL_HUBBLE_SRC = resolve(__dirname, '../../hubble.gl');
+logStep(`[webpack.config.local.js] EXTERNAL_HUBBLE_SRC: ${EXTERNAL_HUBBLE_SRC}`);
 
 // Support for hot reloading changes to the deck.gl library:
 function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
@@ -55,6 +63,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     // if env.deck Load @deck.gl modules from root node_modules/@deck.gl
     // if env.deck_src Load @deck.gl modules from  deck.gl/modules folder parallel to kepler.gl
     externals['deck.gl'].forEach(mdl => {
+      logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
       resolveAlias[`@deck.gl/${mdl}`] = useLocalDeck
         ? `${NODE_MODULES_DIR}/@deck.gl/${mdl}/src`
         : `${EXTERNAL_DECK_SRC}/modules/${mdl}/src`;
@@ -63,6 +72,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     ['luma.gl', 'probe.gl', 'loaders.gl'].forEach(name => {
       // if env.deck Load ${name} from root node_modules
       // if env.deck_src Load ${name} from deck.gl/node_modules folder parallel to kepler.gl
+      logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
       resolveAlias[name] = useLocalDeck
         ? `${NODE_MODULES_DIR}/${name}/src`
         : name === 'probe.gl'
@@ -72,6 +82,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
       // if env.deck Load @${name} modules from root node_modules/@${name}
       // if env.deck_src Load @${name} modules from deck.gl/node_modules/@${name} folder parallel to kepler.gl`
       externals[name].forEach(mdl => {
+        logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
         resolveAlias[`@${name}/${mdl}`] = useLocalDeck
           ? `${NODE_MODULES_DIR}/@${name}/${mdl}/src`
           : `${EXTERNAL_DECK_SRC}/node_modules/@${name}/${mdl}/src`;
@@ -81,12 +92,14 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
 
   if (env.loaders_src) {
     externals['loaders.gl'].forEach(mdl => {
+      logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
       resolveAlias[`@loaders.gl/${mdl}`] = `${EXTERNAL_LOADERS_SRC}/modules/${mdl}/src`;
     });
   }
 
   if (env.hubble_src) {
     externals['hubble.gl'].forEach(mdl => {
+      logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
       resolveAlias[`@hubble.gl/${mdl}`] = `${EXTERNAL_HUBBLE_SRC}/modules/${mdl}/src`;
     });
   }

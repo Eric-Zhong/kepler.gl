@@ -129,8 +129,8 @@ export default class Footer extends PureComponent {
     return (
       <Container>
         <LogosContainer>
-          <img style={{width: '120px'}} src={cdnUrl('icons/kepler.gl-logo.png')} />
-          <BrandingContainer>
+          <img style={{width: '120px'}} src={'/images/logo.png'} />
+          {/* <BrandingContainer>
             <img src={cdnUrl('icons/uber.svg')} />
             <MapboxLogo />
             <NetlifyLogo />
@@ -143,29 +143,29 @@ export default class Footer extends PureComponent {
                 </a>
               </StyledLogo>
             </CreatedBy>
-          </BrandingContainer>
+          </BrandingContainer> */}
         </LogosContainer>
         <ButtonSection>
           <ButtonContainer>
             <LinkButton large href={DEMO_LINK}>
-              Get Started
+              开始启动
             </LinkButton>
-            <LinkButton
+            {/* <LinkButton
               large
               outlineDark
               href="https://github.com/keplergl/kepler.gl"
               style={GITHUB_BUTTON_STYLE}
             >
               <img src={cdnUrl('icons/github.svg')} /> Github
-            </LinkButton>
+            </LinkButton> */}
           </ButtonContainer>
           <SocialContainer>
-            <FacebookShareButton url="https://kepler.gl/">
+            {/* <FacebookShareButton url="https://kepler.gl/">
               <FacebookIcon size={32} />
             </FacebookShareButton>{' '}
             <TwitterShareButton url="https://kepler.gl/" hashtags={['keplergl']}>
               <TwitterIcon size={32} />
-            </TwitterShareButton>
+            </TwitterShareButton> */}
           </SocialContainer>
         </ButtonSection>
       </Container>

@@ -49,7 +49,7 @@ export default class Header extends Component {
       <StyledHeader className="container stretch">
         <div className="links">
           {HEADER_NAVS.map((item, i) => (
-            <StyledLink key={i} href={item.link} target="_blank">
+            <StyledLink key={i} href={item.link} target="_self">
               {item.text}
             </StyledLink>
           ))}

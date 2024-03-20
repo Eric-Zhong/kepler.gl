@@ -81,26 +81,30 @@ export default class Hero extends PureComponent {
         <Content>
           <LogoImage />
           <StyledCaption>
-            <div className="kg-home__caption__subtitle">Make an impact with your location data</div>
+            <div className="kg-home__caption__subtitle">物业管理 - 缺陷分析系统</div>
             <div className="kg-home__caption__description">
-              <span>Kepler.gl is a powerful </span>
-              <span className="t-bold"> open source </span>
-              <span>geospatial analysis tool&nbsp;for </span>
-              <span className="t-bold">large-scale&nbsp;</span>
-              <span>data sets.</span>
+              <span>物业管理对象、位置坐标、形状还原、缺陷数据</span>
             </div>
             <ButtonContainer>
-              <LinkButton large href={DEMO_LINK}>
-                Get Started
+            <LinkButton large href={DEMO_LINK}>
+                开始使用
               </LinkButton>
-              <GithubButton
+              <LinkButton large href={DEMO_LINK} style={{marginLeft: '5px'}}>
+                软件下载
+              </LinkButton>
+              {/* <GithubButton
                 href="https://github.com/keplergl/kepler.gl"
                 style={{marginLeft: '5px'}}
-              />
+              /> */}
             </ButtonContainer>
           </StyledCaption>
           <FadeIn>
-            <SlideShow images={isPalm ? HERO_IMAGES_SCALED : HERO_IMAGES} />
+            <SlideShow images={isPalm ? HERO_IMAGES_SCALED : [
+  '/images/banner/a001.jpg',
+  '/images/banner/a002.jpg',
+  '/images/banner/a003.jpg',
+  '/images/banner/a004.jpg'
+]} />
           </FadeIn>
         </Content>
       </Container>

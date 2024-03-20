@@ -67,19 +67,19 @@ export const HERO_IMAGES_SCALED = [
 
 export const HEADER_NAVS = [
   {
-    text: 'User Guide',
-    link: 'https://docs.kepler.gl/docs/user-guides'
+    text: '使用指南',
+    link: '/', // 'https://docs.kepler.gl/docs/user-guides'
   },
   {
-    text: 'Documentation',
-    link: 'https://docs.kepler.gl/docs/api-reference'
+    text: '说明文档',
+    link: '/', // 'https://docs.kepler.gl/docs/api-reference'
   },
   {
-    text: 'Github',
-    link: 'https://github.com/keplergl/kepler.gl'
+    text: '数据下载',
+    link: '/', // 'https://github.com/keplergl/kepler.gl'
   },
   {
-    text: 'Support Policy',
+    text: '技术支持',
     link: '/policy'
   }
 ];

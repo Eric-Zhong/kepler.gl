@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright contributors to the kepler.gl project
 
-import React, {PureComponent} from 'react';
-import {ThemeProvider} from 'styled-components';
+import React, { PureComponent } from 'react';
 import window from 'global/window';
 
-import {theme} from '../styles';
-import {SECTIONS} from '../content';
+/*
+styled-components是想知道我们如何增强CSS来设置React组件系统的样式的结果。
+通过专注于单个用例，我们设法优化了开发人员的体验以及最终用户的输出。
+在 '../styles.js' 中定义了全局 web 样式。
+*/
+import { ThemeProvider } from 'styled-components';
+import { theme } from '../styles';
+
+import { SECTIONS } from '../content';
 import Hero from './hero';
 import Showcase from './showcase';
 import Examples from './examples';
@@ -42,53 +48,64 @@ export default class Home extends PureComponent {
 
   componentDidMount() {
     // delay 2s to show the banner
-    // if (!window.localStorage.getItem(BannerKey)) {
-    //   window.setTimeout(this._showBanner, 3000);
-    // }
+    // 为了演示，不记录 “已读” 状态
+    if (true || !window.localStorage.getItem(BannerKey)) {
+      window.setTimeout(this._showBanner, 3000);
+    }
   }
 
   _showBanner = () => {
-    this.setState({showBanner: true});
+    this.setState({ showBanner: true });
   };
 
   _hideBanner = () => {
-    this.setState({showBanner: false});
+    this.setState({ showBanner: false });
   };
 
   _disableBanner = () => {
     this._hideBanner();
-    window.localStorage.setItem(BannerKey, 'true');
+    // 为了演示，不记录 “已读” 状态
+    // window.localStorage.setItem(BannerKey, 'true');
   };
 
   render() {
     return (
       <ThemeProvider theme={theme}>
         <div>
+          {/* banner */}
           <Banner
             show={this.state.showBanner}
             height={BannerHeight}
             bgColor={BACKGROUND_COLOR}
             onClose={this._hideBanner}
           >
+            {/* 公告栏 */}
             <Announcement onDisable={this._disableBanner} />
           </Banner>
+          {/* Header 头部 */}
           <Header />
+          {/* 内容区 - Hero */}
           <Hero />
-          {SECTIONS.map(({id, title, description, icon, isDark, background}, i) => {
-            const SectionContent = SECTION_CONTENT[id];
-            return (
-              <Section
-                key={`section-${i}`}
-                title={title}
-                description={description}
-                icon={icon}
-                isDark={isDark}
-                background={background}
-              >
-                <SectionContent />
-              </Section>
-            );
-          })}
+          {
+            // home 页上定义了几个 section 内容块
+            SECTIONS.map(({ id, title, description, icon, isDark, background }, i) => {
+              // 获取每个 secion 下定义的具体显示的 component
+              return (<div />)
+              const SectionContent = SECTION_CONTENT[id];
+              return (
+                <Section
+                  key={`section-${i}`}
+                  title={title}
+                  description={description}
+                  icon={icon}
+                  isDark={isDark}
+                  background={background}
+                >
+                  <SectionContent />
+                </Section>
+              );
+            })}
+          {/* Foot 脚页 */}
           <Footer />
         </div>
       </ThemeProvider>
