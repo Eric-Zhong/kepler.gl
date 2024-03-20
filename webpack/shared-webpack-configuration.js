@@ -92,10 +92,10 @@ module.exports = {
 }
 
 logInstruction('[shared-webpack-configuration.js]' + '[Export webpack config]');
-logInstruction(JSON.stringify({
-  ENV_VARIABLES_WITH_INSTRUCTIONS,
-  WEBPACK_ENV_VARIABLES,
-  RESOLVE_ALIASES: resolveAlias
-}));
+// logInstruction(JSON.stringify({
+//   ENV_VARIABLES_WITH_INSTRUCTIONS,
+//   WEBPACK_ENV_VARIABLES,
+//   RESOLVE_ALIASES: resolveAlias
+// }));
 
 

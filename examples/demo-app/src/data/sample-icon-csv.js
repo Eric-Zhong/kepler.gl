@@ -176,7 +176,7 @@ export const config = {
           type: 'hexagon',
           config: {
             dataId: 'test_icon_data',
-            label: 'new layer',
+            label: '新图层',
             color: [221, 178, 124],
             columns: {
               lat: 'event_lat',

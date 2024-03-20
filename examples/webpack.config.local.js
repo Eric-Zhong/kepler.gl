@@ -14,7 +14,7 @@ const join = require('path').join;
 const webpack = require('webpack');
 const fs = require('fs');
 const KeplerPackage = require('../package');
-const {logStep, logError} = require('../scripts/log');
+const { logStep, logError } = require('../scripts/log');
 
 // 从 root 定义的共享 webpack 配置获取配置数据
 const {
@@ -46,6 +46,7 @@ logStep(`[webpack.config.local.js] EXTERNAL_HUBBLE_SRC: ${EXTERNAL_HUBBLE_SRC}`)
 
 // Support for hot reloading changes to the deck.gl library:
 function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
+  // 从 shared webpack config 中获取 resolve alias 的配置。
   const resolveAlias = RESOLVE_ALIASES;
 
   // Combine flags
@@ -53,6 +54,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
   const useRepoDeck = env.deck_src;
 
   // resolve deck.gl from local dir
+  // 要求从 local 加载 deck.gl
   if (useLocalDeck || useRepoDeck) {
     // Load deck.gl from root node_modules
     // if env.deck_src Load deck.gl from deck.gl/modules/main/src folder parallel to kepler.gl
@@ -72,12 +74,12 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     ['luma.gl', 'probe.gl', 'loaders.gl'].forEach(name => {
       // if env.deck Load ${name} from root node_modules
       // if env.deck_src Load ${name} from deck.gl/node_modules folder parallel to kepler.gl
-      logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
+      logStep(`[webpack.config.local.js] makeLocalDevConfig: ${name}`);
       resolveAlias[name] = useLocalDeck
         ? `${NODE_MODULES_DIR}/${name}/src`
         : name === 'probe.gl'
-        ? `${EXTERNAL_DECK_SRC}/node_modules/${name}/src`
-        : `${EXTERNAL_DECK_SRC}/node_modules/@${name}/core/src`;
+          ? `${EXTERNAL_DECK_SRC}/node_modules/${name}/src`
+          : `${EXTERNAL_DECK_SRC}/node_modules/@${name}/core/src`;
 
       // if env.deck Load @${name} modules from root node_modules/@${name}
       // if env.deck_src Load @${name} modules from deck.gl/node_modules/@${name} folder parallel to kepler.gl`
@@ -90,6 +92,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     });
   }
 
+  logStep(`[webpack.config.local.js] env.loaders_src: ${env.loaders_src}`);
   if (env.loaders_src) {
     externals['loaders.gl'].forEach(mdl => {
       logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
@@ -97,6 +100,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     });
   }
 
+  logStep(`[webpack.config.local.js] env.hubble_src: ${env.hubble_src}`);
   if (env.hubble_src) {
     externals['hubble.gl'].forEach(mdl => {
       logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
@@ -128,7 +132,10 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
           test: /\.(js|ts|tsx)$/,
           use: ['source-map-loader'],
           enforce: 'pre',
-          exclude: [/node_modules\/react-palm/, /node_modules\/react-data-grid/]
+          exclude: [
+            /node_modules\/react-palm/,
+            /node_modules\/react-data-grid/
+          ]
         },
         // for compiling apache-arrow ESM module
         {
@@ -144,6 +151,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
 }
 
 function makeBabelRule(env, exampleDir) {
+  logStep(`[webpack.config.local.js] makeBabelRule(): ${exampleDir}`);
   return {
     // Compile source using babel
     test: /\.(js|ts|tsx)$/,
@@ -151,16 +159,16 @@ function makeBabelRule(env, exampleDir) {
     include: [
       ...(env.deck || env.deck_src
         ? [
-            join(NODE_MODULES_DIR, '@deck.gl'),
-            join(NODE_MODULES_DIR, '@luma.gl'),
-            join(NODE_MODULES_DIR, '@probe.gl'),
-            join(NODE_MODULES_DIR, '@loaders.gl'),
-            join(EXTERNAL_DECK_SRC, 'modules'),
-            join(EXTERNAL_DECK_SRC, 'node_modules/@luma.gl'),
-            join(EXTERNAL_DECK_SRC, 'node_modules/@probe.gl'),
-            join(EXTERNAL_DECK_SRC, 'node_modules/probe.gl'),
-            join(EXTERNAL_DECK_SRC, 'node_modules/@loaders.gl')
-          ]
+          join(NODE_MODULES_DIR, '@deck.gl'),
+          join(NODE_MODULES_DIR, '@luma.gl'),
+          join(NODE_MODULES_DIR, '@probe.gl'),
+          join(NODE_MODULES_DIR, '@loaders.gl'),
+          join(EXTERNAL_DECK_SRC, 'modules'),
+          join(EXTERNAL_DECK_SRC, 'node_modules/@luma.gl'),
+          join(EXTERNAL_DECK_SRC, 'node_modules/@probe.gl'),
+          join(EXTERNAL_DECK_SRC, 'node_modules/probe.gl'),
+          join(EXTERNAL_DECK_SRC, 'node_modules/@loaders.gl')
+        ]
         : []),
       ...(env.loaders_src ? [join(EXTERNAL_LOADERS_SRC, 'modules')] : []),
       ...(env.hubble_src ? [join(EXTERNAL_HUBBLE_SRC, 'modules')] : []),
@@ -175,7 +183,7 @@ function makeBabelRule(env, exampleDir) {
     options: {
       presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
       plugins: [
-        ['@babel/plugin-transform-typescript', {isTSX: true, allowDeclareFields: true}],
+        ['@babel/plugin-transform-typescript', { isTSX: true, allowDeclareFields: true }],
         '@babel/plugin-proposal-class-properties',
         '@babel/plugin-proposal-optional-chaining',
         '@babel/plugin-proposal-export-namespace-from',
@@ -206,8 +214,11 @@ function makeBabelRule(env, exampleDir) {
  * @param {Object} externals
  */
 function addLocalDevSettings(env, exampleConfig, exampleDir, externals) {
+
+  logStep(`[webpack.config.local.js] addLocalDevSettings(): ${exampleConfig} ${exampleDir} ${externals}`);
+
   const localDevConfig = makeLocalDevConfig(env, exampleDir, externals);
-  const config = {...exampleConfig, ...localDevConfig};
+  const config = { ...exampleConfig, ...localDevConfig };
 
   config.resolve = config.resolve || {};
   config.resolve = {
@@ -227,6 +238,7 @@ function addLocalDevSettings(env, exampleConfig, exampleDir, externals) {
 }
 
 function addBabelSettings(env, config, exampleDir) {
+  logStep(`[webpack.config.local.js] addBabelSettings(): ${config} ${exampleDir}`);
   return {
     ...config,
     module: {
@@ -240,18 +252,23 @@ function addBabelSettings(env, config, exampleDir) {
 }
 
 module.exports = (exampleConfig, exampleDir) => env => {
+  logStep(`[webpack.config.local.js] module.export(): ${exampleConfig} ${exampleDir}`);
+
   // find all @deck.gl @luma.gl @loaders.gl @hubble.gl modules
   const modules = ['@deck.gl', '@loaders.gl', '@luma.gl', '@probe.gl', '@hubble.gl'];
+
   const loadAllDirs = modules.map(
     dir =>
-      new Promise(function readDir(success, reject) {
-        fs.readdir(join(NODE_MODULES_DIR, dir), function readDirItems(err, items) {
-          if (err) {
-            logError(`Cannot find ${dir} in node_modules, make sure it is installed.`, err);
-            success(null);
-          }
-          success(items);
-        });
+      new Promise(function readDir( /* reslove */ success, /* reject */ reject) {
+        fs.readdir(
+          /* path     */ join(NODE_MODULES_DIR, dir),
+          /* callback */ function readDirItems(/* error */ err, /* files: string[] */ items) {
+            if (err) {
+              logError(`Cannot find ${dir} in node_modules, make sure it is installed.`, err);
+              success(null);
+            }
+            success(items);
+          });
       })
   );
 
@@ -268,3 +285,5 @@ module.exports = (exampleConfig, exampleDir) => env => {
       return addBabelSettings(env, config, exampleDir, externals);
     });
 };
+
+logStep('[webpack.config.local.js]' + '[Export webpack config]');

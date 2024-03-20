@@ -1,21 +1,24 @@
 // SPDX-License-Identifier: MIT
 // Copyright contributors to the kepler.gl project
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import styled, {ThemeProvider} from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import window from 'global/window';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {theme} from '@kepler.gl/styles';
+/* 使用 kepler 默认的样式 */
+import { theme } from '@kepler.gl/styles';
 import Banner from './components/banner';
-import Announcement, {FormLink} from './components/announcement';
-import {replaceLoadDataModal} from './factories/load-data-modal';
-import {replaceMapControl} from './factories/map-control';
-import {replacePanelHeader} from './factories/panel-header';
-import {CLOUD_PROVIDERS_CONFIGURATION, DEFAULT_FEATURE_FLAGS} from './constants/default-settings';
-import {messages} from './constants/localization';
+/* 公告栏内容组件 */
+import Announcement, { FormLink } from './components/announcement';
+import { replaceLoadDataModal } from './factories/load-data-modal';
+import { replaceMapControl } from './factories/map-control';
+import { replacePanelHeader } from './factories/panel-header';
+import { CLOUD_PROVIDERS_CONFIGURATION, DEFAULT_FEATURE_FLAGS } from './constants/default-settings';
+import { messages } from './constants/localization';
 
+/* 加载自定义的 actions 定义 */
 import {
   loadRemoteMap,
   loadSampleConfigurations,
@@ -23,32 +26,54 @@ import {
   onLoadCloudMapSuccess
 } from './actions';
 
-import {loadCloudMap, addDataToMap, addNotification, replaceDataInMap} from '@kepler.gl/actions';
-import {CLOUD_PROVIDERS} from './cloud-providers';
+/* 加载 kepler 中定义的 actions */
+import { loadCloudMap, addDataToMap, addNotification, replaceDataInMap } from '@kepler.gl/actions';
+// 试试从源代码加载
+// import { loadCloudMap, addDataToMap, addNotification, replaceDataInMap } from '../../../src/actions';
+/* Cloud Storage 服务提供者 Provider */
+import { CLOUD_PROVIDERS } from './cloud-providers';
 
-const KeplerGl = require('@kepler.gl/components').injectComponents([
-  replaceLoadDataModal(),
-  replaceMapControl(),
-  replacePanelHeader()
-]);
+/*
+这段代码是在JavaScript中使用ES6模块语法导入 @kepler.gl/components 的库。
+
+injectComponents方法接受一个数组作为参数，数组中的每个元素都是一个需要注入到KeplerGl中的组件。
+在这个例子中，有三个组件被注入：
+replaceLoadDataModal(): 替换加载数据模态框
+replaceMapControl(): 地图控件
+replacePanelHeader(): 面板头部
+*/
+// npm package = '@kepler.gl/components';
+// source code = '../../../src/components';
+const KeplerGl = require('@kepler.gl/components')
+  .injectComponents([
+    replaceLoadDataModal(),
+    replaceMapControl(),
+    replacePanelHeader()
+  ]);
 
 // Sample data
 /* eslint-disable no-unused-vars */
-import sampleTripData, {testCsvData, sampleTripDataConfig} from './data/sample-trip-data';
+import sampleTripData, { testCsvData, sampleTripDataConfig } from './data/sample-trip-data';
+/* 一个简单的 GeoJSON Polygon 数据 */
 import sampleGeojson from './data/sample-small-geojson';
+/* 一个 GeoJSON Point 数据 */
 import sampleGeojsonPoints from './data/sample-geojson-points';
+/* 还不知道干啥用的 GeoJSON 显示配置数据 */
 import sampleGeojsonConfig from './data/sample-geojson-config';
-import sampleH3Data, {config as h3MapConfig} from './data/sample-hex-id-csv';
-import sampleS2Data, {config as s2MapConfig, dataId as s2DataId} from './data/sample-s2-data';
-import sampleAnimateTrip, {animateTripDataId} from './data/sample-animate-trip-data';
-import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
+import sampleH3Data, { config as h3MapConfig } from './data/sample-hex-id-csv';
+import sampleS2Data, { config as s2MapConfig, dataId as s2DataId } from './data/sample-s2-data';
+import sampleAnimateTrip, { animateTripDataId } from './data/sample-animate-trip-data';
+/* 一个 CSV 的带 Icon 的数据 */
+import sampleIconCsv, { config as savedMapConfig } from './data/sample-icon-csv';
 import sampleGpsData from './data/sample-gps-data';
 
-import {processCsvData, processGeojson} from '@kepler.gl/processors';
+import { processCsvData, processGeojson } from '@kepler.gl/processors';
 /* eslint-enable no-unused-vars */
 
 const BannerHeight = 48;
 const BannerKey = `banner-${FormLink}`;
+
+// 是从state对象中获取demo属性下的keplerGl属性值，并将其返回。
 const keplerGlGetState = state => state.demo.keplerGl;
 
 const GlobalStyle = styled.div`
@@ -99,7 +124,10 @@ class App extends Component {
   componentDidMount() {
     // if we pass an id as part of the url
     // we ry to fetch along map configurations
-    const {params: {id, provider} = {}, location: {query = {}} = {}} = this.props;
+    const {
+      params: { id, provider } = {},
+      location: { query = {} } = {}
+    } = this.props;
 
     const cloudProvider = CLOUD_PROVIDERS.find(c => c.name === provider);
     if (cloudProvider) {
@@ -121,26 +149,32 @@ class App extends Component {
     // Load map using a custom
     if (query.mapUrl) {
       // TODO?: validate map url
-      this.props.dispatch(loadRemoteMap({dataUrl: query.mapUrl}));
+      this.props.dispatch(loadRemoteMap({ dataUrl: query.mapUrl }));
     }
 
     // delay zs to show the banner
-    // if (!window.localStorage.getItem(BannerKey)) {
-    //   window.setTimeout(this._showBanner, 3000);
-    // }
+    // 用于演示，一直显示 banner 提醒
+    if (!window.localStorage.getItem(BannerKey)) {
+      window.setTimeout(this._showBanner, 3000);
+    }
     // load sample data
-    // this._loadSampleData();
+    this._loadSampleData();
 
     // Notifications
+    // 显示右上角消息提醒
     // this._loadMockNotifications();
   }
 
   _showBanner = () => {
-    this.setState({showBanner: true});
+    this.setState({
+      showBanner: true
+    });
   };
 
   _hideBanner = () => {
-    this.setState({showBanner: false});
+    this.setState({
+      showBanner: false
+    });
   };
 
   _disableBanner = () => {
@@ -150,10 +184,10 @@ class App extends Component {
 
   _loadMockNotifications = () => {
     const notifications = [
-      [{message: 'Welcome to Kepler.gl'}, 3000],
-      [{message: 'Something is wrong', type: 'error'}, 1000],
-      [{message: 'I am getting better', type: 'warning'}, 1000],
-      [{message: 'Everything is fine', type: 'success'}, 1000]
+      [{ message: '欢迎使用睿单Pro' }, 3000],
+      [{ message: '连接数据出错', type: 'error' }, 1000],
+      [{ message: '正在恢复连接', type: 'warning' }, 1000],
+      [{ message: '连接成功', type: 'success' }, 1000]
     ];
 
     this._addNotifications(notifications);
@@ -170,15 +204,18 @@ class App extends Component {
     }
   }
 
+  /**
+   * Demo 中的显示的数据示例
+   */
   _loadSampleData() {
     this._loadPointData();
     this._loadGeojsonData();
-    // this._loadTripGeoJson();
-    // this._loadIconData();
-    // this._loadH3HexagonData();
-    // this._loadS2Data();
+    this._loadTripGeoJson();
+    this._loadIconData();
+    this._loadH3HexagonData();
+    this._loadS2Data();
     // this._loadScenegraphLayer();
-    // this._loadGpsData();
+    this._loadGpsData();
   }
 
   _loadPointData() {
@@ -186,7 +223,7 @@ class App extends Component {
       addDataToMap({
         datasets: {
           info: {
-            label: 'Sample Taxi Trips in New York City',
+            label: '纽约出租车轨迹', // 'Sample Taxi Trips in New York City',
             id: 'test_trip_data'
           },
           data: sampleTripData
@@ -241,7 +278,7 @@ class App extends Component {
         datasets: [
           {
             info: {
-              label: 'Icon Data',
+              label: '图标数据', // 'Icon Data',
               id: 'test_icon_data'
             },
             data: processCsvData(sampleIconCsv)
@@ -256,7 +293,10 @@ class App extends Component {
       addDataToMap({
         datasets: [
           {
-            info: {label: 'Trip animation', id: animateTripDataId},
+            info: {
+              label: '轨迹动画',
+              id: animateTripDataId
+            },
             data: processGeojson(sampleAnimateTrip)
           }
         ]
@@ -276,7 +316,7 @@ class App extends Component {
         replaceDataInMap({
           datasetToReplaceId: 'bart-stops-geo',
           datasetToUse: {
-            info: {label: 'Bart Stops Geo Replaced', id: 'bart-stops-geo-2'},
+            info: { label: 'Bart Stops Geo Replaced', id: 'bart-stops-geo-2' },
             data: sliceData
           }
         })
@@ -290,11 +330,11 @@ class App extends Component {
       addDataToMap({
         datasets: [
           {
-            info: {label: 'Bart Stops Geo', id: 'bart-stops-geo'},
+            info: { label: 'Bart Stops Geo', id: 'bart-stops-geo' },
             data: processGeojson(sampleGeojsonPoints)
           },
           {
-            info: {label: 'SF Zip Geo', id: 'sf-zip-geo'},
+            info: { label: 'SF Zip Geo', id: 'sf-zip-geo' },
             data: processGeojson(sampleGeojson)
           }
         ],
@@ -313,13 +353,14 @@ class App extends Component {
         datasets: [
           {
             info: {
-              label: 'H3 Hexagons V2',
+              label: 'H3 六边形网格 V2', // 'H3 Hexagons V2',
               id: 'h3-hex-id'
             },
             data: processCsvData(sampleH3Data)
           }
         ],
-        config: h3MapConfig,
+        // 添加地图显示样式设置后，反而显示不出地图了
+        // config: h3MapConfig,
         options: {
           keepExistingConfig: true
         }
@@ -334,7 +375,7 @@ class App extends Component {
         datasets: [
           {
             info: {
-              label: 'S2 Data',
+              label: 'S2 网格数据', // 'S2 Data',
               id: s2DataId
             },
             data: processCsvData(sampleS2Data)
@@ -354,7 +395,7 @@ class App extends Component {
         datasets: [
           {
             info: {
-              label: 'Gps Data',
+              label: 'GPS 数据', // 'Gps Data',
               id: 'gps-data'
             },
             data: processCsvData(sampleGpsData)
@@ -410,9 +451,10 @@ class App extends Component {
           </Banner>
           <div style={CONTAINER_STYLE}>
             <AutoSizer>
-              {({height, width}) => (
+              {({ height, width }) => (
                 <KeplerGl
-                  mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
+                  /* 已经不对 mapbox 做支持了 */
+                  // mapboxApiAccessToken={CLOUD_PROVIDERS_CONFIGURATION.MAPBOX_TOKEN}
                   id="map"
                   /*
                    * Specify path to keplerGl state, because it is not mount at the root
@@ -421,6 +463,7 @@ class App extends Component {
                   width={width}
                   height={height}
                   cloudProviders={CLOUD_PROVIDERS}
+                  // 1in18 消息翻译
                   localeMessages={messages}
                   onExportToCloudSuccess={onExportFileSuccess}
                   onLoadCloudMapSuccess={onLoadCloudMapSuccess}
@@ -436,6 +479,6 @@ class App extends Component {
 }
 
 const mapStateToProps = state => state;
-const dispatchToProps = dispatch => ({dispatch});
+const dispatchToProps = dispatch => ({ dispatch });
 
 export default connect(mapStateToProps, dispatchToProps)(App);

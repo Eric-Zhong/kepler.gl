@@ -192,8 +192,7 @@ const config = {
       },
       layerBlending: 'normal'
     },
-
-    mapStyle: {
+    mapStyle1: {
       styleType: 'b9tnac',
       mapStyles: {
         b9tnac: {

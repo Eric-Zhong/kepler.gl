@@ -3984,7 +3984,7 @@ export const sampleTripDataConfig = {
               lng: 'pickup_longitude'
             },
             color: [255, 0, 0],
-            label: 'pickup',
+            label: '上车点', // 'pickup',
             isVisible: true,
             visConfig: {
               colorRange: {
@@ -4015,7 +4015,7 @@ export const sampleTripDataConfig = {
               lng: 'dropoff_longitude'
             },
             color: [0, 0, 255],
-            label: 'dropoff',
+            label: '下车点', // 'dropoff',
             isVisible: true
           }
         },
@@ -4034,7 +4034,7 @@ export const sampleTripDataConfig = {
           type: 'arc',
           config: {
             dataId: 'test_trip_data',
-            label: 'pickup -> dropoff',
+            label: '上车 -> 下车', // 'pickup -> dropoff',
             columns: {
               lat0: 'pickup_latitude',
               lng0: 'pickup_longitude',
@@ -4072,7 +4072,7 @@ export const sampleTripDataConfig = {
       ]
     },
     mapStyle: {
-      styleType: '41fv96u',
+      // styleType: '41fv96u', // 加了这个地图样式后，地图显示不出来。
       visibleLayerGroups: {
         label: false,
         road: false,
@@ -4084,7 +4084,7 @@ export const sampleTripDataConfig = {
       },
       mapStyles: {
         '41fv96u': {
-          accessToken: null,
+          accessToken: null, // xuzhong: pk.eyJ1IjoiZXJpY3pob25neHUiLCJhIjoiY2xuMmoydXd6MDI5bjMwcXQ0MGNkNXB6diJ9.RceMsMRvctiF_MrvyOJwKA
           custom: true,
           icon:
             'https://api.mapbox.com/styles/v1/MAPBOX_USER/cjg0ks54x300a2squ8fr9vhvq/static/-122.3391,37.7922,9,0,0/400x300?access_token=ACCESS_TOKEN&logo=false&attribution=false',

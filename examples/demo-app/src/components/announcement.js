@@ -2,6 +2,10 @@
 // Copyright contributors to the kepler.gl project
 
 import React from 'react';
+/*
+它允许你使用CSS样式来定义组件的外观。通过使用styled-components，
+你可以将CSS样式直接嵌入到JavaScript代码中，从而实现更直观、可维护和可重用的样式。
+*/
 import styled from 'styled-components';
 
 const StyledText = styled.div`
@@ -31,15 +35,11 @@ export const FormLink = 'https://shan990829.typeform.com/to/RbCAXt';
 const Announcement = ({onDisable}) => (
   <StyledText>
     <span>
-      Kepler.gl turns two years old! Help our open source community by taking this 5-minute-survey
-      and get a chance to win a <b>$100 Amazon gift card</b>. Make your answers count!
+      睿单.Pro 已于2024年1月20日发布了 v1.0 版。
     </span>
-    <StyledLink target="_blank" href={FormLink}>
-      Take the survey
-    </StyledLink>
     {onDisable ? (
       <DisableBanner>
-        <StyledLink onClick={onDisable}>Already provided my feedback!</StyledLink>
+        <StyledLink onClick={onDisable}>关闭</StyledLink>
       </DisableBanner>
     ) : null}
   </StyledText>
