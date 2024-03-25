@@ -53,9 +53,13 @@ export function ContainerFactory(
     * KeplerGl instances in your app. It defines the prop name of the KeplerGl state that is
     * stored in the KeplerGl reducer. For example, the state of the KeplerGl component with id `foo` is
     * stored in `state.keplerGl.foo`.
+    * id:这是KeplerGl实例的唯一标识符。如果你的应用中有多个KeplerGl实例，那么这个id就是必需的。
+    * 它定义了存储在KeplerGl reducer中的KeplerGl状态的属性名。
+    * 例如，具有id foo的KeplerGl组件的状态被存储在state.keplerGl.foo中。
     *
     * In case you create multiple kepler.gl instances using the same id, the kepler.gl state defined by the entry will be
     * overridden by the latest instance and reset to a blank state.
+    * 如果你使用相同的id创建了多个kepler.gl实例，那么由入口定义的kepler.gl状态将被最新实例覆盖，并重置为一个空白状态。
     * @param {string} props.mapboxApiAccessToken - _required_
     * @param {string} props.mapboxApiUrl - _optional_
     * @param {Boolean} props.mapStylesReplaceDefault - _optional_
@@ -150,7 +154,7 @@ export function ContainerFactory(
   }
 
   return connector(Container);
-}
+} // function ContainerFactory(kepler: KeplerGlFactory)
 
 const allDependencies = flattenDeps([], ContainerFactory);
 
@@ -161,6 +165,11 @@ export const appInjector = allDependencies.reduce(
 );
 
 // Helper to inject custom components and return kepler.gl container
+/**
+ * 将自定义组件注入到kepler.gl容器中，并返回该容器。
+ * @param recipes 
+ * @returns 
+ */
 export function injectComponents(recipes = []) {
   return provideRecipesToInjector(recipes, appInjector).get(ContainerFactory);
 }

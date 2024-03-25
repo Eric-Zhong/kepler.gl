@@ -30,6 +30,9 @@ import styled from 'styled-components';
 import get from 'lodash.get';
 import {SidePanelProps, SidePanelItem} from './types';
 
+/**
+ * React Div 组件 - 用于左侧 Sidebar 中 Tab 内容的显示
+ */
 export const StyledSidePanelContent = styled.div`
   ${props => props.theme.sidePanelScrollBar};
   flex-grow: 1;
@@ -44,6 +47,9 @@ export const StyledSidePanelContent = styled.div`
   }
 `;
 
+/**
+ * 当前 SidePanelFactory 工厂所依赖的父级 Factory
+ */
 SidePanelFactory.deps = [
   SidebarFactory,
   PanelHeaderFactory,
@@ -70,27 +76,45 @@ export default function SidePanelFactory(
 ) {
   // inject components
   const SIDEBAR_COMPONENTS = {
-    layer: LayerManager,
-    filter: FilterManager,
-    interaction: InteractionManager,
-    map: MapManager
+    layer: LayerManager,            /* 当前 SidePanelFactory 中 export 出的  */
+    filter: FilterManager,          /* 当前 SidePanelFactory 中 export 出的  */
+    interaction: InteractionManager,/* 当前 SidePanelFactory 中 export 出的  */
+    map: MapManager                 /* 当前 SidePanelFactory 中 export 出的  */
   };
 
   const SIDEBAR_ICONS = {
-    layer: Layers,
-    filter: FilterFunnel,
-    interaction: Settings,
-    map: CursorClick
+    layer: Layers,                  /* 在 ./common/icons 中定义的 */
+    filter: FilterFunnel,           /* 在 ./common/icons 中定义的 */
+    interaction: Settings,          /* 在 ./common/icons 中定义的 */
+    map: CursorClick                /* 在 ./common/icons 中定义的 */
   };
 
   // We should defined sidebar panels here but keeping them for backward compatible
+  // 我们应该在这里定义侧边栏面板，但是为了向后兼容，保留了它们。
+  /*
+  SIDEBAR_PANELS 中用 JSON 定义了默认的 panel， 关键配置：{id, label, onClick}
+  SidePanelItem[]: 根据 SIDEBAR_PANELS 中定义的默认 panel 配置，重新生成 react 的 component 组件的定义对象。
+  {
+    id: '',
+    label: '',
+    onClick: null,
+    component: [React Component 组件 “Tab 的内容显示区”]
+    iconComponent: [React Component 组件 “Tab上显示的图标”]
+  }
+   */
   const fullPanels: SidePanelItem[] = SIDEBAR_PANELS.map(component => ({
     ...component,
+    /* 通过 id  在 IoC 注入的 components 进行查找 - 找 tab body*/
     component: SIDEBAR_COMPONENTS[component.id],
+    /*  通过 id 在 IoC 注入的 Compoents 中进行查找 - 找 tab head icon */
     iconComponent: SIDEBAR_ICONS[component.id]
   }));
 
   const getCustomPanelProps = get(CustomPanels, ['defaultProps', 'getProps']) || (() => ({}));
+
+  console.log('[Kepler debug]', '\t', '@kepler.gl/components/side-panel.tsx', '\t', 'export function SidePanelFactory(..)', '生成 SidePanelFactory 工厂', '');
+  console.log('[Kepler debug]', '\t', '@kepler.gl/components/side-panel.tsx', '\t', 'export function SidePanelFactory(..)', 'fullPanels', fullPanels);
+  console.log('[Kepler debug]', '\t', '@kepler.gl/components/side-panel.tsx', '\t', 'export function SidePanelFactory(..)', 'getCustomPanelProps', getCustomPanelProps);
 
   // eslint-disable-next-line max-statements
   const SidePanel: React.FC<SidePanelProps> = (props: SidePanelProps) => {
@@ -163,7 +187,13 @@ export default function SidePanelFactory(
     ]);
 
     const customPanelProps = useMemo(() => getCustomPanelProps(props), [props]);
+
+    /**
+     * 当前已选中的 Tab 标签页的内容 content 组件
+     */
     const PanelComponent = currentPanel?.component;
+
+    console.log('[Kepler debug]', '\t', '@kepler.gl/components/side-panel.tsx', '\t', 'export function SidePanelFactory(..)', 'currentPanel', PanelComponent);
 
     return (
       <Sidebar
@@ -173,6 +203,7 @@ export default function SidePanelFactory(
         minifiedWidth={0}
         onOpenOrClose={_onOpenOrClose}
       >
+        {/* Tab 标签页头部 Icon 区 */}
         <PanelHeader
           appName={appName}
           version={version}
@@ -227,6 +258,7 @@ export default function SidePanelFactory(
                 }
               />
             ) : null}
+            {/* 用户自定义的 SidePanel 内容放在这里 */}
             <CustomPanels
               {...customPanelProps}
               activeSidePanel={activeSidePanel}

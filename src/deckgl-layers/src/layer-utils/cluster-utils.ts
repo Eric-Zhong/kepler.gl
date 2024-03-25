@@ -29,7 +29,7 @@ const clusterResolver = ({clusterRadius}: {clusterRadius: number}) => `${cluster
 
 const getClusterer = ({clusterRadius, geoJSON}: {clusterRadius: number; geoJSON}) =>
   new Supercluster({
-    maxZoom: 20,
+    maxZoom: 30,
     radius: clusterRadius,
     reduce: (accumulated, props) => {
       accumulated.points = [...accumulated.points, ...props.points];

@@ -92,7 +92,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     });
   }
 
-  logStep(`[webpack.config.local.js] env.loaders_src: ${env.loaders_src}`);
+  logStep(`[webpack.config.local.js] env.loaders_src: ${env.loaders_src ? 'env.loaders_src 未定义': env.loaders_src}`);
   if (env.loaders_src) {
     externals['loaders.gl'].forEach(mdl => {
       logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);
@@ -100,7 +100,7 @@ function makeLocalDevConfig(env, EXAMPLE_DIR = LIB_DIR, externals = {}) {
     });
   }
 
-  logStep(`[webpack.config.local.js] env.hubble_src: ${env.hubble_src}`);
+  logStep(`[webpack.config.local.js] env.hubble_src: ${env.hubble_src ? 'env.hubble_src 未定义': env.hubble_src}`);
   if (env.hubble_src) {
     externals['hubble.gl'].forEach(mdl => {
       logStep(`[webpack.config.local.js] makeLocalDevConfig: ${mdl}`);

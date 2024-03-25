@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "webpack-dev-server --progress --hot --open",
-    "start-local": "webpack-dev-server --env.es6 --progress --hot --open"
+    "start": "webpack-dev-server --progress --hot",
+    "start-local": "webpack-dev-server --env.es6 --progress --hot"
   },
   "dependencies": {
     "@kepler.gl/components": "^3.0.0-alpha.1",

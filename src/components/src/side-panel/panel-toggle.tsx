@@ -25,7 +25,13 @@ const PanelHeaderBottom = styled.div.attrs({
 PanelToggleFactory.deps = [PanelTabFactory];
 
 function PanelToggleFactory(PanelTab: ReturnType<typeof PanelTabFactory>) {
+
+  console.log('[Kepler debug]', '\t', '@kepler.gl/components/side-panel/panel-toggle', '\t', 'function PanelToggleFactory(..)', '生成 PanelToggle 组件', '');
+
   const PanelToggle: React.FC<PanelToggleProps> = ({activePanel, panels, togglePanel}) => {
+
+    console.log('[Kepler debug]', '\t', '@kepler.gl/components/side-panel/panel-toggle', '\t', 'function PanelToggleFactory(..)', 'PanelToggle 组件', activePanel, panels);
+
     const onClick = useCallback(
       panel => {
         const callback = panel.onClick || togglePanel;

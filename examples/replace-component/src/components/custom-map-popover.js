@@ -2,7 +2,7 @@
 // Copyright contributors to the kepler.gl project
 
 import React from 'react';
-import {MapPopoverFactory} from '@kepler.gl/components';
+import {MapPopoverFactory} from '../../../../src/components/src';
 
 const CustomMapPopoverFactory = (...deps) => {
   const MapPopover = MapPopoverFactory(...deps);

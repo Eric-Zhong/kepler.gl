@@ -2,7 +2,7 @@
 // Copyright contributors to the kepler.gl project
 
 import React from 'react';
-import {Icons} from '@kepler.gl/components';
+import {Icons} from '../../../../src/components/src';
 
 function CustomSidePanelsFactory() {
   const CustomPanels = props => {

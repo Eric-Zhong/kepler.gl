@@ -64,6 +64,7 @@ export default {
   },
   sidebar: {
     panels: {
+      twin: 'Twin',
       layer: 'Layers',
       filter: 'Filters',
       interaction: 'Interactions',

@@ -9,8 +9,8 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development --env.prod --content-base ./src/static --progress --open",
-    "start-prod": "webpack-dev-server -p --env.prod --content-base ./src/static --progress --open",
+    "start": "webpack-dev-server --mode development --env.prod --content-base ./src/static --progress",
+    "start-prod": "webpack-dev-server -p --env.prod --content-base ./src/static --progress",
     "build-clean": "rm -rf ./dist && mkdir dist",
     "build-static": "cp -r ./src/static/* dist",
     "build-script": "NODE_OPTIONS=--openssl-legacy-provider webpack -p --env.prod",

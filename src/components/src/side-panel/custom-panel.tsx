@@ -3,6 +3,7 @@
 
 import React from 'react';
 import {SidePanelItem} from '../types';
+import { Icons } from '../common';
 
 export type CustomPanelsProps<P> = {
   panels: SidePanelItem[];
@@ -15,19 +16,22 @@ function CustomPanelsFactory<P>() {
     return <div />;
   };
 
+  console.log('xuzhong: 这里取消了注释代码，但发现没有看到显示后的效果。')
   CustomPanels.defaultProps = {
     // provide a list of additional panels
     panels: [
-      // {
-      //   id: 'rocket',
-      //   label: 'Rocket',
-      //   iconComponent: Icons.Rocket
-      // },
-      // {
-      //   id: 'chart',
-      //   label: 'Chart',
-      //   iconComponent: Icons.LineChart
-      // }
+      {
+        id: 'rocket',
+        label: 'Rocket',
+        iconComponent: Icons.Rocket,
+        component: ()=>(<h1>Rocket Panel</h1>),
+      },
+      {
+        id: 'chart',
+        label: 'Chart',
+        iconComponent: Icons.LineChart,
+        component: ()=>(<h1>Chart Panel</h1>),
+      }
     ],
     // prop selector from side panel props
     getProps: (sidePanelProps: SidePanelItem) => ({} as P)
